@@ -93,7 +93,7 @@ export class Header extends PureComponent {
         isLoading: PropTypes.bool.isRequired,
         isHidden: PropTypes.bool,
         isDirty: PropTypes.bool,
-        hasForeignChanges: PropTypes.bool,
+        nodeHasForeignChanges: PropTypes.bool,
         foreignWorkspacesWithChanges: PropTypes.array,
         isHiddenInIndex: PropTypes.bool,
         hasError: PropTypes.bool.isRequired,
@@ -165,7 +165,7 @@ export class Header extends PureComponent {
             isOver,
             isDragging,
             canDrop,
-            hasForeignChanges,
+            nodeHasForeignChanges,
             foreignWorkspacesWithChanges,
             ...restProps
         } = this.props;
@@ -178,7 +178,7 @@ export class Header extends PureComponent {
             [theme['header__data--isHiddenInIndex']]: isHiddenInIndex,
             [theme['header__data--isHidden']]: isHidden,
             [theme['header__data--isDirty']]: isDirty,
-            [theme['header__data--hasForeignChanges']]: hasForeignChanges,
+            [theme['header__data--nodeHasForeignChanges']]: nodeHasForeignChanges,
             [theme['header__data--isDragging']]: isDragging,
             [theme['header__data--acceptsDrop']]: isOver && canDrop,
             [theme['header__data--deniesDrop']]: isOver && !canDrop
@@ -206,7 +206,7 @@ export class Header extends PureComponent {
                             className={dataClassNames}
                             onClick={onClick}
                             style={{paddingLeft: (level * 18) + 'px'}}
-                            title={hasForeignChanges && Array.isArray(foreignWorkspacesWithChanges) ? printForeignWorkspacesWithChanges() : ''}
+                            title={nodeHasForeignChanges && Array.isArray(foreignWorkspacesWithChanges) ? printForeignWorkspacesWithChanges() : ''}
                             >
                             <div className={theme.header__labelWrapper}>
                                 <IconComponent icon={icon || 'question'} label={iconLabel} className={theme.header__icon}/>

@@ -328,7 +328,7 @@ export const focusedNodeParentLineSelector = createSelector(
     }
 );
 
-export const makeHasForeignChangesSelector = () => createSelector(
+export const makeNodeHasForeignChangesSelector = () => createSelector(
     [
         $get('cr.nodes.byContextPath'),
         (state, contextPath) => {
