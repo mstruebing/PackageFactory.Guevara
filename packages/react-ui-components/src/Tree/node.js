@@ -93,6 +93,8 @@ export class Header extends PureComponent {
         isLoading: PropTypes.bool.isRequired,
         isHidden: PropTypes.bool,
         isDirty: PropTypes.bool,
+        nodeHasForeignChanges: PropTypes.bool,
+        foreignWorkspacesWithChanges: PropTypes.array,
         isHiddenInIndex: PropTypes.bool,
         hasError: PropTypes.bool.isRequired,
         label: PropTypes.string.isRequired,
@@ -163,6 +165,8 @@ export class Header extends PureComponent {
             isOver,
             isDragging,
             canDrop,
+            nodeHasForeignChanges,
+            foreignWorkspacesWithChanges,
             ...restProps
         } = this.props;
         const rest = omit(restProps, ['onToggle', 'isCollapsed', 'hasError', 'isDragging', 'dragForbidden']);
@@ -174,10 +178,17 @@ export class Header extends PureComponent {
             [theme['header__data--isHiddenInIndex']]: isHiddenInIndex,
             [theme['header__data--isHidden']]: isHidden,
             [theme['header__data--isDirty']]: isDirty,
+            [theme['header__data--nodeHasForeignChanges']]: nodeHasForeignChanges,
             [theme['header__data--isDragging']]: isDragging,
             [theme['header__data--acceptsDrop']]: isOver && canDrop,
             [theme['header__data--deniesDrop']]: isOver && !canDrop
         });
+
+        const printForeignWorkspacesWithChanges = () => {
+            return foreignWorkspacesWithChanges.reduce((workspaces, workspace) => {
+                return workspaces.concat(workspace, ', ');
+            }, '').slice(0, -2);
+        };
 
         return connectDragSource(
             <div>
@@ -195,6 +206,7 @@ export class Header extends PureComponent {
                             className={dataClassNames}
                             onClick={onClick}
                             style={{paddingLeft: (level * 18) + 'px'}}
+                            title={nodeHasForeignChanges && Array.isArray(foreignWorkspacesWithChanges) ? printForeignWorkspacesWithChanges() : ''}
                             >
                             <div className={theme.header__labelWrapper}>
                                 <IconComponent icon={icon || 'question'} label={iconLabel} className={theme.header__icon}/>

@@ -65,6 +65,8 @@ export default class Node extends PureComponent {
         canBeInsertedAlongside: PropTypes.bool,
         canBeInsertedInto: PropTypes.bool,
         isNodeDirty: PropTypes.bool.isRequired,
+        nodeHasForeignChanges: PropTypes.bool,
+        foreignWorkspacesWithChanges: PropTypes.array,
 
         nodeTypesRegistry: PropTypes.object.isRequired,
         i18nRegistry: PropTypes.object.isRequired,
@@ -226,7 +228,9 @@ export default class Node extends PureComponent {
             onNodeDrag,
             onNodeDrop,
             currentlyDraggedNode,
-            isContentTreeNode
+            isContentTreeNode,
+            nodeHasForeignChanges,
+            foreignWorkspacesWithChanges
         } = this.props;
 
         if (this.isHidden()) {
@@ -255,6 +259,8 @@ export default class Node extends PureComponent {
                     isFocused={this.isFocused()}
                     isLoading={this.isLoading()}
                     isDirty={this.props.isNodeDirty}
+                    nodeHasForeignChanges={nodeHasForeignChanges}
+                    foreignWorkspacesWithChanges={foreignWorkspacesWithChanges}
                     isHidden={$get('properties._hidden', node)}
                     isHiddenInIndex={$get('properties._hiddenInIndex', node) || this.isIntermediate()}
                     hasError={this.hasError()}
@@ -320,6 +326,8 @@ export const PageTreeNode = withNodeTypeRegistryAndI18nRegistry(connect(
         const canBeMovedAlongsideSelector = selectors.CR.Nodes.makeCanBeMovedAlongsideSelector(nodeTypesRegistry);
         const canBeMovedIntoSelector = selectors.CR.Nodes.makeCanBeMovedIntoSelector(nodeTypesRegistry);
         const isDocumentNodeDirtySelector = selectors.CR.Workspaces.makeIsDocumentNodeDirtySelector();
+        const nodeHasForeignChangesSelector = selectors.CR.Nodes.makeNodeHasForeignChangesSelector();
+        const foreignWorkspacesWithChangesSelector = selectors.CR.Nodes.makeForeignWorkspacesWithChangesSelector();
 
         return (state, {node, currentlyDraggedNode}) => ({
             isContentTreeNode: false,
@@ -335,6 +343,8 @@ export const PageTreeNode = withNodeTypeRegistryAndI18nRegistry(connect(
             loadingNodeContextPaths: selectors.UI.PageTree.getLoading(state),
             errorNodeContextPaths: selectors.UI.PageTree.getErrors(state),
             isNodeDirty: isDocumentNodeDirtySelector(state, $get('contextPath', node)),
+            nodeHasForeignChanges: nodeHasForeignChangesSelector(state, $get('contextPath', node)),
+            foreignWorkspacesWithChanges: foreignWorkspacesWithChangesSelector(state, $get('contextPath', node)),
             canBeInsertedAlongside: canBeMovedAlongsideSelector(state, {
                 subject: getContextPath(currentlyDraggedNode),
                 reference: getContextPath(node)
