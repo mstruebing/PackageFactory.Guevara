@@ -99,7 +99,7 @@ export default class AssetEditor extends PureComponent {
     }
 
     isFeatureEnabled(featureName) {
-        const features = Object.assign({}, DEFAULT_FEATURES, this.props.options.features);
+        const features = Object.assign({}, DEFAULT_FEATURES, (this.props.options ? this.props.options.features : {}));
         return features[featureName];
     }
 
@@ -175,6 +175,7 @@ export default class AssetEditor extends PureComponent {
         }
 
         const disabled = $get('options.disabled', this.props);
+        const accept = $get('options.accept', this.props);
 
         if (this.props.options.multiple) {
             return (
@@ -186,6 +187,7 @@ export default class AssetEditor extends PureComponent {
                     ref={this.setAssetUploadReference}
                     isLoading={false}
                     imagesOnly={this.props.imagesOnly}
+                    accept={accept}
                     >
                     <MultiSelectBox
                         dndType={dndTypes.MULTISELECT}
@@ -218,6 +220,7 @@ export default class AssetEditor extends PureComponent {
                 ref={this.setAssetUploadReference}
                 isLoading={false}
                 imagesOnly={this.props.imagesOnly}
+                accept={accept}
                 >
                 <SelectBox
                     optionValueField="identifier"

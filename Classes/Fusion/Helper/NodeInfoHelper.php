@@ -11,6 +11,7 @@ namespace Neos\Neos\Ui\Fusion\Helper;
  * source code.
  */
 
+use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Model\NodeInterface;
 use Neos\Eel\FlowQuery\FlowQuery;
 use Neos\Eel\ProtectedContextAwareInterface;
@@ -95,14 +96,19 @@ class NodeInfoHelper implements ProtectedContextAwareInterface
             'nodeType' => $node->getNodeType()->getName(),
             'properties' => $omitMostPropertiesForTreeState ? [
                 // if we are only rendering the tree state, ensure _isHidden is sent to hidden nodes are correctly shown in the tree.
-                '_hidden' => $node->isHidden()
+                '_hidden' => $node->isHidden(),
+                '_hiddenInIndex' => $node->isHiddenInIndex(),
+                '_hiddenBeforeDateTime' => $node->getHiddenBeforeDateTime() instanceof \DateTime,
+                '_hiddenAfterDateTime' => $node->getHiddenAfterDateTime() instanceof \DateTime,
             ] : $this->nodePropertyConverterService->getPropertiesArray($node),
             'label' => $node->getLabel(),
             'isAutoCreated' => $node->isAutoCreated(),
             'depth' => $node->getDepth(),
             // TODO: 'uri' =>@if.onyRenderWhenNodeIsADocument = ${q(node).is('[instanceof Neos.Neos:Document]')}
             'children' => [],
+            'matchesCurrentDimensions' => $node instanceof Node && $node->dimensionsAreMatchingTargetDimensionValues(),
         ];
+
         // It's important to not set `isFullyLoaded` to false by default, so the state would get merged correctly
         if (!$omitMostPropertiesForTreeState) {
             $nodeInfo['isFullyLoaded'] = true;
